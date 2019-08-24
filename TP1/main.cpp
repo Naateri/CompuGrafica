@@ -10,7 +10,7 @@
 #define KEY_FOUR 52
 #define KEY_FIVE 53
 
-int display_exercise = 4;
+int display_exercise = 5;
 
 void exercise_1(float center_x, float center_y, float edge_sz){
 	glBegin(GL_LINE_STRIP);
@@ -90,11 +90,11 @@ void exercise_5(int circle_num, float radius_reduction, float angle){
 void displayGizmo()
 {
 	glBegin(GL_LINE_STRIP);
-	if (display_exercise == 1) exercise_1(4.0f, -2.0f, 34.5f);
-	else if (display_exercise == 2) exercise_2(4.0f, -2.0f, 10.0f);
-	else if (display_exercise == 3) exercise_3(5, 25.0f, 30.0f);
-	else if (display_exercise == 4) exercise_4(5, 20.0f);
-	else if (display_exercise == 5) exercise_5(5, 20.0f, 30.0f);
+	if (display_exercise == 1) exercise_1(18.0f, -5.5f, 11.5f);
+	else if (display_exercise == 2) exercise_2(27.0f, -15.0f, 10.0f);
+	else if (display_exercise == 3) exercise_3(5, 30.0f, 30.0f);
+	else if (display_exercise == 4) exercise_4(6, 30.0f);
+	else if (display_exercise == 5) exercise_5(6, 20.0f, 30.0f);
 	glEnd();
 }
 
