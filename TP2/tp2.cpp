@@ -124,12 +124,15 @@ void move_on_z(float limit){
 }
 
 void exercise_1(){
+	glutSolidSphere(0.25f, 8, 8);
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glRotatef(a, 0.0f, 0.0f, 1.0f);
-	glTranslatef(4.0f, 4.0f, 4.0f);
+	glTranslatef(4.0f, 4.0f, 0.0f);
 	glutSolidTeapot(5.0f);
 	a += spin_rate;
 }
+
+float x_val, y_val;
 
 void exercise_2(){
 	glColor3f(0.0f, 0.0f, 1.0f);
@@ -139,30 +142,33 @@ void exercise_2(){
 	glPopMatrix();
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glPushMatrix();
+		glTranslatef(x, 0.0f, 0.0f);
 		glRotatef(a, 0.0f, 0.0f, 1.0f);
-		glTranslatef(x + 4.0f, 4.0f, 4.0f);
-		glutSolidTeapot(2.0f);
-	glPopMatrix();
+		glTranslatef(4.0f, 4.0f, 0.0f);
+		glutSolidTeapot(1.5f);
+	//glPopMatrix();
 	a += spin_rate;
 	move_on_x(8.0f);
 }
 
 void exercise_3(){
 	exercise_2();
-	glPopMatrix();
-	glPushMatrix();
-	//torus
-	glRotatef(b, 0.0f, 1.0f, 0.0f);
-	glTranslatef(x, 3.0f, 3.0f);
-	glutSolidTorus(0.5f, 2.0f, 10, 100);
-	b += 3 * spin_rate;
-	move_on_x(8.0f);
+	//glPushMatrix();
+		//torus
+		glTranslatef(0.0f, 0.0f, 0.0f);
+		glRotatef(b, 0.0f, 1.0f, 0.0f);
+		glTranslatef(3.0f, 0.0f, 3.0f);
+		glutSolidTorus(0.33f, 1.0f, 10, 100);
 	
 	glPopMatrix();
+	b += 3 * spin_rate;
+	//move_on_x(8.0f);
 	//cube
-	glRotatef(c, 1.0f, 0.0f, 0.0f);
-	glTranslatef(0.0f, -5.0f, 0.0f);
-	glutSolidCube(2.0f);
+	glPushMatrix();
+		glRotatef(c, 1.0f, 0.0f, 0.0f);
+		glTranslatef(x, -5.0f, 0.0f);
+		glutSolidCube(2.0f);
+	glPopMatrix();
 	c += 1.5f;
 	
 }
@@ -183,21 +189,23 @@ void exercise_4(){
 	//earth
 	glColor3f(0.0f, 0.0f, 1.0f);
 	glPushMatrix();
-		glTranslatef(x, y, 10.0f);
+		glTranslatef(0.0f, 0.0f, 0.0f);
 		glRotatef(b, 0.0f, 1.0f, 0.0f);
+		glTranslatef(10.0f, 0.0f, 10.0f);
 		glutSolidSphere(2.0f, 8, 8);
-	glPopMatrix();
-	move_on_x(10.0f); move_on_y(10.0f); move_on_z(10.0f);
-	b += VT;
+	//glPopMatrix();
+		//move_on_x(10.0f); move_on_y(10.0f); move_on_z(10.0f);
+		b += VT;
 	
-	//moon
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glPushMatrix();
-		glTranslatef(x + 2.5f, y + 2.5f, 15.0f);
+		//moon
+		glColor3f(1.0f, 1.0f, 1.0f);
+	//glPushMatrix();
+		glTranslatef(0.0f, 0.0f, 0.0f);
 		glRotatef(c, 0.0f, 1.0f, 0.0f);
+		glTranslatef(2.5f, 0.0f, 0.0f);
 		glutSolidSphere(0.67f, 8, 8);
+		c += VL;
 	glPopMatrix();
-	c += VL;
 	//mars
 	glColor3f(1.0f, 0.0f, 0.0f);
 	glPushMatrix();
@@ -225,9 +233,9 @@ GLvoid window_display()
 	a += 2.0f;*/
 	
 	//exercise_1();
-	exercise_2();
+	//exercise_2();
 	//exercise_3();
-	//exercise_4();
+	exercise_4();
 
 	glutSwapBuffers();
 
