@@ -48,15 +48,18 @@ void exercise_2(float center_x, float center_y, float radius){
 void exercise_3(int circle_num, float radius_reduction, float radius){
 	float reduction;
 	exercise_2(0.0f, 0.0f, radius);
+	glBegin(GL_LINE_STRIP);
 	float orig_rad = radius;
 	for(int i = 1; i < circle_num; i++){
 		reduction = radius * radius_reduction / 100;
 		radius = radius - reduction;
 		exercise_2(radius - orig_rad, 0.0f, radius);
 	}
+	glEnd();
 }
 
 void exercise_4(int circle_num, float radius_reduction){
+	glBegin(GL_LINE_STRIP);
 	float old_radius = 10.0f, new_radius;
 	float reduction, x, y;
 	x = -25.0f; y = 0.0f;
@@ -84,14 +87,27 @@ void exercise_5(int circle_num, float radius_reduction, float angle){
 		exercise_2(x, y, new_radius);
 		old_radius = new_radius;
 	}
+	glEnd();
+}
+
+void idle(){
+	glutPostRedisplay();
 }
 
 //dibuja un simple gizmo
 void displayGizmo()
 {
 	glBegin(GL_LINE_STRIP);
-	if (display_exercise == 1) exercise_1(18.0f, -5.5f, 11.5f);
-	else if (display_exercise == 2) exercise_2(27.0f, -15.0f, 10.0f);
+	if (display_exercise == 1){
+		//glBegin(GL_LINE_STRIP);
+		exercise_1(18.0f, -5.5f, 11.5f);
+		//glEnd();
+	}
+	else if (display_exercise == 2){
+		//glBegin(GL_LINE_STRIP);
+		exercise_2(27.0f, -15.0f, 10.0f);
+		//glEnd();
+	}
 	else if (display_exercise == 3) exercise_3(5, 30.0f, 30.0f);
 	else if (display_exercise == 4) exercise_4(6, 30.0f);
 	else if (display_exercise == 5) exercise_5(6, 20.0f, 30.0f);
@@ -104,11 +120,13 @@ void glPaint(void) {
 	
 	//El fondo de la escena al color initial
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //(R, G, B, transparencia) en este caso un fondo negro
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 		
 	//dibuja el gizmo
 	displayGizmo();
 	//doble buffer, mantener esta instruccion al fin de la funcion
+	glFlush();
 	glutSwapBuffers();
 }
 
@@ -118,6 +136,7 @@ void glPaint(void) {
 void init_GL(void) {
 	//Color del fondo de la escena
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //(R, G, B, transparencia) en este caso un fondo negro
+	glClearDepth(1.0f);
 	
 	//modo projeccion 
 	glMatrixMode(GL_PROJECTION);
@@ -158,7 +177,7 @@ GLvoid window_key(unsigned char key, int x, int y) {
 	default:
 		break;
 	}
-	
+	glutPostRedisplay();
 }
 //
 //el programa principal
@@ -178,6 +197,7 @@ int main(int argc, char** argv) {
 	glutReshapeFunc(&window_redraw);
 	// Callback del teclado
 	glutKeyboardFunc(&window_key);
+	//glutIdleFunc(&idle);
 	
 	glutMainLoop(); //bucle de rendering
 	

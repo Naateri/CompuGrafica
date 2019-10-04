@@ -5,8 +5,9 @@
 
 #define KEY_ESC 27
 
+int a = 0, b = 0, rope = 40;
 
-void drawRectangle(float height, float width){
+void drawRectangle(float width, float height){
 	glBegin(GL_QUADS);
 	glVertex2f(0, -height / 2.0f);
 	glVertex2f(width, -height / 2.0f);
@@ -15,16 +16,53 @@ void drawRectangle(float height, float width){
 	glEnd();
 }
 
+void draw_crane(int angle1, int angle2, int length){
+	glBegin(GL_QUADS);
+	
+	glColor3d(255,0,0);
+	glTranslatef(0.0f, 0.0f, 0.0f);
+	drawRectangle(40.0f, 30.0f); //base rectangle
+	
+	glColor3d(255, 255, 0);
+	glTranslatef(30.0f, 15.0f, 0.0f);
+	glRotatef(angle1, 0.0f, 0.0f, 1.0f);
+	glTranslatef(0.0f, 0.0f, 0.0f);
+	drawRectangle(100.0f, 20.0f); //A rectangle
+	
+	glColor3d(0,255,0);
+	glTranslatef(90.0f, 10.0f, 0.0f);
+	glRotatef(angle2, 0.0f, 0.0f, 1.0f);
+	glTranslatef(0.0f, 0.0f, 0.0f);
+	drawRectangle(80.0f, 20.0f); //B rectangle
+	
+	//rope
+	glColor3d(255, 255, 255);
+	glTranslatef(90.0f, -10.0f, 0.0f);
+	glRotatef(45.0f, 0.0f, 0.0f, 1.0f);
+	drawRectangle(3.0f, (float)length);
+	
+	//box
+	glColor3d(255,0,0);
+	glTranslatef(-3.0f, -(float)length+15.0f, 0.0f);
+	drawRectangle(10.0f, 10.0f);
+	
+	glEnd();
+}
+
 //dibuja un simple gizmo
 void displayGizmo()
 {
-	glBegin(GL_LINE_STRIP);
-	drawRectangle(15.0f, 20.0f);
-	glTranslatef(20.0f, 10.0f, 0.0f);
-	drawRectangle(10.0f, 50.0f);
-	glTranslatef(50.0f, 10.0f, 0.0f);
-	drawRectangle(10.0f, 40.0f);
+	glBegin(GL_QUADS);
+	
+	glColor3d(0,0,0);
+	drawRectangle(600.0f, 600.0f);
+	draw_crane(a,b,rope);
+	
 	glEnd();
+}
+
+void idle(){
+	glutPostRedisplay();
 }
 
 //
@@ -69,6 +107,36 @@ GLvoid window_key(unsigned char key, int x, int y) {
 	case KEY_ESC:
 		exit(0);
 		break;
+	case 'w':
+		a += 1;
+		break;
+	case 's':
+		a -= 1;
+		break;
+	case 'q':
+		a += 2;
+		break;
+	case 'a':
+		a -= 2;
+		break;
+	case 'e':
+		b += 1;
+		break;
+	case 'd':
+		b -= 1;
+		break;
+	case 'r':
+		b += 2;
+		break;
+	case 'f':
+		b -= 2;
+		break;
+	case '+':
+		rope += 1;
+		break;
+	case '-':
+		rope -= 1;
+		break;
 	default:
 		break;
 	}
@@ -84,7 +152,7 @@ int main(int argc, char** argv) {
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutInitWindowSize(600, 600); //tamaño de la ventana
 	glutInitWindowPosition(100, 100); //posicion de la ventana
-	glutCreateWindow("TP1 OpenGL : hello_world_OpenGL"); //titulo de la ventana
+	glutCreateWindow("Mi gruita"); //titulo de la ventana
 	
 	init_GL(); //funcion de inicializacion de OpenGL
 	
@@ -92,6 +160,7 @@ int main(int argc, char** argv) {
 	glutReshapeFunc(&window_redraw);
 	// Callback del teclado
 	glutKeyboardFunc(&window_key);
+	glutIdleFunc(&idle);
 	
 	glutMainLoop(); //bucle de rendering
 	

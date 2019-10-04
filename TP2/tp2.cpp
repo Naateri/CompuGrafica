@@ -20,39 +20,10 @@ GLvoid window_display();
 GLvoid window_reshape(GLsizei width, GLsizei height);
 GLvoid window_key(unsigned char key, int x, int y);
 
+int display_exercise = 1;
+
 //function called on each frame
 GLvoid window_idle();
-
-int main(int argc, char **argv)
-{
-	glutInit(&argc, argv);
-
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-
-
-	glutInitWindowSize(800, 800);
-	glutInitWindowPosition(0, 0);
-	glutCreateWindow("TP 2 : Transformaciones");
-
-
-	initGL();
-	init_scene();
-
-	glutDisplayFunc(&window_display);
-
-	glutReshapeFunc(&window_reshape);
-
-	glutKeyboardFunc(&window_key);
-
-	//function called on each frame
-	glutIdleFunc(&window_idle);
-
-	glutMainLoop();
-
-	return 1;
-}
-
-
 
 GLvoid initGL()
 {
@@ -173,11 +144,50 @@ void exercise_3(){
 	
 }
 
-float Vt = 1.0f, VS = 2.0f;
+float Vt = 1.0f, VS = 1.0f;
 float Vl = 2.0f*Vt;
 float VT = 3.0f*VS, VL = 1.5f * VS, VM = VS;
 
 void exercise_4(){
+	//sun
+	glColor3f(1.0f, 1.0f, 0.0f);
+	glPushMatrix();
+		glRotatef(a, 0.0f, 0.0f, 1.0f);
+		glutSolidSphere(4.0f, 8, 8);
+	glPopMatrix();
+	a += VS;
+	
+	//earth
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glPushMatrix();
+		glTranslatef(0.0f, 0.0f, 0.0f);
+		glRotatef(b, 0.0f, 0.0f, 1.0f);
+		glTranslatef(10.0f, 10.0f, 0.0f);
+		glutSolidSphere(2.0f, 8, 8);
+	//glPopMatrix();
+		b += VT;
+	
+		//moon
+		glColor3f(1.0f, 1.0f, 1.0f);
+	//glPushMatrix();
+		glTranslatef(0.0f, 0.0f, 0.0f);
+		glRotatef(c, 0.0f, 0.0f, 1.0f);
+		glTranslatef(2.5f, 0.0f, 2.5f);
+		glutSolidSphere(0.67f, 8, 8);
+		c += VL;
+	glPopMatrix();
+	//mars
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glPushMatrix();
+		glTranslatef(0.0f, 0.0f, 0.0f);
+		glRotatef(d, 0.0f, 0.0f, 1.0f);
+		glTranslatef(18.0f, 18.0f, 0.0f);
+		glutSolidSphere(1.5f, 8, 8);
+	glPopMatrix();
+	d += VM;
+}
+
+void exercise_4_1(){
 	//sun
 	glColor3f(1.0f, 1.0f, 0.0f);
 	glPushMatrix();
@@ -194,27 +204,28 @@ void exercise_4(){
 		glTranslatef(10.0f, 0.0f, 10.0f);
 		glutSolidSphere(2.0f, 8, 8);
 	//glPopMatrix();
-		//move_on_x(10.0f); move_on_y(10.0f); move_on_z(10.0f);
-		b += VT;
+	b += VT;
 	
-		//moon
-		glColor3f(1.0f, 1.0f, 1.0f);
+	//moon
+	glColor3f(1.0f, 1.0f, 1.0f);
 	//glPushMatrix();
 		glTranslatef(0.0f, 0.0f, 0.0f);
 		glRotatef(c, 0.0f, 1.0f, 0.0f);
-		glTranslatef(2.5f, 0.0f, 0.0f);
+		glTranslatef(2.5f, 0.0f, 2.5f);
 		glutSolidSphere(0.67f, 8, 8);
-		c += VL;
+	c += VL;
 	glPopMatrix();
 	//mars
 	glColor3f(1.0f, 0.0f, 0.0f);
 	glPushMatrix();
-		glTranslatef(18.0f, 18.0f, 18.0f);
+		glTranslatef(0.0f, 0.0f, 0.0f);
 		glRotatef(d, 0.0f, 1.0f, 0.0f);
+		glTranslatef(18.0f, 0.0f, 18.0f);
 		glutSolidSphere(1.5f, 8, 8);
 	glPopMatrix();
 	d += VM;
 }
+
 
 GLvoid window_display()
 {
@@ -224,7 +235,7 @@ GLvoid window_display()
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-25.0f, 25.0f, -25.0f, 25.0f, -25.0f, 25.0f);
+	glOrtho(-30.0f, 30.0f, -30.0f, 30.0f, -30.0f, 30.0f);
 
 	/*dibujar aqui*/
 	
@@ -232,10 +243,11 @@ GLvoid window_display()
 	glutSolidTeapot(5.0f);
 	a += 2.0f;*/
 	
-	//exercise_1();
-	//exercise_2();
-	//exercise_3();
-	exercise_4();
+	if (display_exercise == 1) exercise_1();
+	else if (display_exercise == 2) exercise_2();
+	else if (display_exercise == 3) exercise_3();
+	else if (display_exercise == 4) exercise_4();
+	else exercise_4_1();
 
 	glutSwapBuffers();
 
@@ -266,7 +278,21 @@ GLvoid window_key(unsigned char key, int x, int y)
 	case ECHAP:
 		exit(1);
 		break;
-
+	case '1':
+		display_exercise = 1;
+		break;
+	case '2':
+		display_exercise = 2;
+		break;
+	case '3':
+		display_exercise = 3;
+		break;
+	case '4':
+		display_exercise = 4;
+		break;
+	case '5':
+		display_exercise = 5;
+		break;
 	default:
 		printf("La touche %d non active.\n", key);
 		break;
@@ -281,3 +307,33 @@ GLvoid window_idle()
 
 	glutPostRedisplay();
 }
+
+int main(int argc, char **argv)
+{
+	glutInit(&argc, argv);
+	
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+	
+	
+	glutInitWindowSize(800, 800);
+	glutInitWindowPosition(0, 0);
+	glutCreateWindow("TP 2 : Transformaciones");
+	
+	
+	initGL();
+	init_scene();
+	
+	glutDisplayFunc(&window_display);
+	
+	glutReshapeFunc(&window_reshape);
+	
+	glutKeyboardFunc(&window_key);
+	
+	//function called on each frame
+	glutIdleFunc(&window_idle);
+	
+	glutMainLoop();
+	
+	return 1;
+}
+
