@@ -37,8 +37,8 @@ void draw_crane(int angle1, int angle2, int length){
 	
 	//rope
 	glColor3d(255, 255, 255);
-	glTranslatef(90.0f, -10.0f, 0.0f);
-	glRotatef(45.0f, 0.0f, 0.0f, 1.0f);
+	glTranslatef(79.0f, -20.0f, 0.0f);
+	//glRotatef(45.0f, 0.0f, 0.0f, 1.0f);
 	drawRectangle(3.0f, (float)length);
 	
 	//box

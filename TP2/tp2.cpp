@@ -99,7 +99,7 @@ void exercise_1(){
 	glColor3f(0.0f, 1.0f, 0.0f);
 	glRotatef(a, 0.0f, 0.0f, 1.0f);
 	glTranslatef(4.0f, 4.0f, 0.0f);
-	glutSolidTeapot(5.0f);
+	glutSolidTeapot(1.5f);
 	a += spin_rate;
 }
 
@@ -140,8 +140,7 @@ void exercise_3(){
 		glTranslatef(x, -5.0f, 0.0f);
 		glutSolidCube(2.0f);
 	glPopMatrix();
-	c += 1.5f;
-	
+	c += 1.5f;	
 }
 
 float Vt = 1.0f, VS = 1.0f;

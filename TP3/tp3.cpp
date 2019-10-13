@@ -23,7 +23,7 @@ GLvoid window_display();
 GLvoid window_reshape(GLsizei width, GLsizei height);
 GLvoid window_key(unsigned char key, int x, int y);
 
-bool perspective = 1;
+bool perspective = 0;
 bool camera = 0;
 int exercise = 1;
 
@@ -36,6 +36,8 @@ float ay = 0.0f;
 
 float cur_x = 0.0f;
 float cur_z = 0.0f;
+
+float earth_x, earth_y;
 
 double fov = 90.0, aspect = 1.0, zNear = 1.0, zFar = 50.0;
 
@@ -104,6 +106,80 @@ void exercise_2(){
 	glVertex3d(0, 0,0);
 	glVertex3d(0, 0,15);
 	glEnd();
+}
+
+
+float a_e = 0.0f;
+float b = 0.0f; 
+float c = 0.0f;
+float d = 0.0f;
+
+float Vt = 1.0f, VS = 1.0f;
+float Vl = 2.0f*Vt;
+float VT = 3.0f*VS, VL = 1.5f * VS, VM = VS;
+
+void exercise_4(){
+	//solar system
+	if (perspective && !camera) glTranslatef(0.0f, 0.0f, -60.0f); //gluPerspective
+	//sun
+	float x_position, y_position, radius;
+	glColor3f(1.0f, 1.0f, 0.0f);
+	glPushMatrix();
+		radius = 4.0f;
+		//glRotatef(a, 0.0f, 0.0f, 1.0f);
+		//x_position = sin(a_e * M_PI/180) * radius;
+		//y_position = cos(a_e * M_PI/180) * radius;
+		//glTranslatef(x_position, y_position, 0.0f);
+		glTranslatef(0.0f, 0.0f, 0.0f);
+		glutSolidSphere(4.0f, 8, 8);
+	glPopMatrix();
+	a_e += VS;
+	
+	//earth
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glPushMatrix();
+		glTranslatef(0.0f, 0.0f, 0.0f);
+		radius = 2.0f + 10.0f;
+		//glRotatef(b, 0.0f, 0.0f, 1.0f);
+		x_position = sin(b * M_PI/180) * radius;
+		y_position = cos(b * M_PI/180) * radius;
+		glTranslatef(x_position, y_position, 0.0f);
+		earth_x = x_position;
+		earth_y = y_position;
+		//glTranslatef(0.0f, 0.0f, 0.0f);
+		//glTranslatef(10.0f, 10.0f, 0.0f);
+	glutSolidSphere(2.0f, 8, 8);
+	//glPopMatrix();
+	b += VT;
+	
+	//moon
+	glColor3f(1.0f, 1.0f, 1.0f);
+	//glPushMatrix();
+		glTranslatef(0.0f, 0.0f, 0.0f);
+		radius = 0.67f + 2.5f;
+		//glRotatef(c, 0.0f, 0.0f, 1.0f);
+		x_position = sin(c * M_PI/180) * radius;
+		y_position = cos(c * M_PI/180) * radius;
+		glTranslatef(x_position, y_position, 0.0f);
+		
+		//glTranslatef(2.5f, 0.0f, 2.5f);
+		glutSolidSphere(0.67f, 8, 8);
+		c += VL;
+	glPopMatrix();
+	//mars
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glPushMatrix();
+		glTranslatef(0.0f, 0.0f, 0.0f);
+		radius = 1.5f + 18.0f;
+		//glRotatef(d, 0.0f, 0.0f, 1.0f);
+		x_position = sin(d * M_PI/180) * radius;
+		y_position = cos(d * M_PI/180) * radius;
+		glTranslatef(x_position, y_position, 0.0f);
+		
+		//glTranslatef(18.0f, 18.0f, 0.0f);
+		glutSolidSphere(1.5f, 8, 8);
+	glPopMatrix();
+	d += VM;
 }
 
 //function called on each frame
@@ -178,7 +254,7 @@ GLvoid window_display()
 	
 	eyex = 0.0;
 	eyey = 0.0;
-	eyez = 30.0;
+	eyez = 100.0;
 	
 	centerx = 0.0;
 	centery = 0.0;
@@ -196,8 +272,9 @@ GLvoid window_display()
 	
 	if (perspective || exercise == 2){
 		gluPerspective(45.0f, 1.0f, 1.0f, 400.0f);
-		if (camera && exercise == 1){
-			gluLookAt(eyex, eyey, eyez + CAMERA_OFFSET, centerx, centery, centerz, upx, upy, upz);
+		if (camera && (exercise == 1 || exercise == 3)){
+			if (exercise == 1) gluLookAt(eyex, eyey, eyez + CAMERA_OFFSET, centerx, centery, centerz, upx, upy, upz);
+			else if (exercise == 3) gluLookAt(eyex, eyey, eyez + CAMERA_OFFSET, earth_x, earth_y, centerz, upx, upy, upz);
 		}
 	} else {
 		glOrtho(-30.0f, 30.0f, -30.0f, 30.0f, -30.0f, 30.0f);
@@ -208,13 +285,13 @@ GLvoid window_display()
 		
 		glRotatef(ax, 0.0f, 1.0f, 0.0f);
 		glRotatef(ay, 1.0f, 0.0f, 0.0f);
-		
-	}
+	}	
 	
 	/*dibujar aqui*/
 	
 	if (exercise == 1) exercise_1();
 	else if (exercise == 2) exercise_2();
+	else if (exercise == 3) exercise_4();
 	
 	glutSwapBuffers();
 	
@@ -267,6 +344,9 @@ GLvoid window_key(unsigned char key, int x, int y)
 		exercise = 2;
 		camera = 0;
 		perspective = 1;
+		break;
+	case '3':
+		exercise = 3;
 		break;
 	default:
 		printf("La touche %d non active.\n", key);

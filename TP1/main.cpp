@@ -10,7 +10,7 @@
 #define KEY_FOUR 52
 #define KEY_FIVE 53
 
-int display_exercise = 5;
+int display_exercise = 1;
 
 void exercise_1(float center_x, float center_y, float edge_sz){
 	glBegin(GL_LINE_STRIP);
@@ -98,19 +98,43 @@ void idle(){
 void displayGizmo()
 {
 	glBegin(GL_LINE_STRIP);
-	if (display_exercise == 1){
-		//glBegin(GL_LINE_STRIP);
+	if (display_exercise == 1){ //square
+		/*float center_x, center_y, edge_sz; 
+		std::cout << "center x, center y, edge size\n";
+		std::cin >> center_x >> center_y >> edge_sz;
+		exercise_1(center_x, center_y, edge_sz);*/
 		exercise_1(18.0f, -5.5f, 11.5f);
-		//glEnd();
 	}
-	else if (display_exercise == 2){
-		//glBegin(GL_LINE_STRIP);
+	else if (display_exercise == 2){ //circle
+		/*float center_x, center_y, radius; 
+		std::cout << "center x, center y, radius\n";
+		std::cin >> center_x >> center_y >> radius;
+		exercise_2(center_x, center_y, radius);*/
 		exercise_2(27.0f, -15.0f, 10.0f);
-		//glEnd();
 	}
-	else if (display_exercise == 3) exercise_3(5, 30.0f, 30.0f);
-	else if (display_exercise == 4) exercise_4(6, 30.0f);
-	else if (display_exercise == 5) exercise_5(6, 20.0f, 30.0f);
+	else if (display_exercise == 3){ //circles inside a bigger one
+		/*int circle_num;
+		float radius_reduction, radius;
+		std::cout << "Number of circles, radius reduction percentage, initial radius\n";
+		exercise_3(circle_num, radius_reduction, radius);*/
+		exercise_3(5, 30.0f, 30.0f);
+	}
+	else if (display_exercise == 4){ //circles in a line
+		/*int circle_num;
+		float radius_reduction;
+		std::cout << "Number of circles, radius reduction percentage\n";
+		std::cin >> circle_num >> radius_reduction;
+		exercise_4(circle_num, radius_reduction);*/
+		exercise_4(6, 30.0f);
+	}
+	else if (display_exercise == 5){ //circles in a line at an agle
+		/*int circle_num;
+		float radius_reduction, angle;
+		std::cout << "Number of circles, radius reduction percentage, angle\n";
+		std::cin >> circle_num >> radius_reduction >> angle;
+		exercise_5(circle_num, radius_reduction, angle);*/
+		exercise_5(6, 20.0f, 90.0f);
+	}
 	glEnd();
 }
 
