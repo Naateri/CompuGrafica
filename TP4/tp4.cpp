@@ -108,16 +108,13 @@ int main(int argc, char **argv)
 
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 
-
 	glutInitWindowSize(800, 800);
 	glutInitWindowPosition(0, 0);
 	glutCreateWindow("TP 3 : Transformations 3D Part 2");
 
-
 	initGL();
 	init_scene();
 
-	
 	glutDisplayFunc(&window_display);
 	glutReshapeFunc(&window_reshape);
 	
@@ -267,7 +264,6 @@ GLvoid window_display()
 	glTranslatef(var_x, 0.0, var_z);
 	glRotatef(delta_x, 0.0, 1.0, 0.0);
 	glRotatef(delta_y, 1.0, 0.0, 0.0);
-
 
 	//Gizmo3D();
 	draw_floor();
