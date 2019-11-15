@@ -35,9 +35,11 @@ float step = 0; //0.0 Posicion inicial. 1.0 Traslacion. 2.0 Primera Rotacion(en 
 float shininess = 50.0f;
 int id = 1;
 
-GLint textures[11];// = {0,0,0,0,0,0,0,0,0,0,0};
+GLuint wall_texture, wall_texture2;
 
-//wall_1, wall_2, wall_3, wall_4, triangle_1, triangle_2, roof_1, roof_2, floor, tronco, hojas
+GLuint textures[7];// = {0,0,0,0,0,0,0,0,0,0,0};
+
+//wall_1, wall_2, triangle_1, roof_1, floor, tronco, hojas
 
 ///////////////////////////////////////////////////////////////////////////////
 //(1)
@@ -150,18 +152,18 @@ GLuint LoadTexture(const char* filename, GLenum image_format, GLint internal_for
 		return false;
 	
 	//generate an OpenGL texture ID for this texture
-	glGenTextures(id++, &textureID);
+	glGenTextures(1, &textureID);
+	
 	
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	//store the texture data for OpenGL use
 	glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width, height, 0, image_format, GL_UNSIGNED_BYTE, bits);
 	
-	
 	/*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	
+		
 	//glGenerateMipmap(GL_TEXTURE_2D);
 	FreeImage_Unload(dib);
 	
@@ -180,13 +182,21 @@ int main(int argc, char **argv)
 	glutCreateWindow("TP 4 : Transformations 3D Part 2");
 
 	initGL();
-	init_scene();
 	
-	textures[0] = LoadTexture("bricks.jpeg", GL_RGB, GL_RGB);
-	textures[1] = LoadTexture("lickitung.jpeg", GL_RGB, GL_RGB);
+	wall_texture = LoadTexture("bricks.jpeg", GL_RGB, GL_RGB);
+	textures[0] = wall_texture;
+	
+	//cur_texture = LoadTexture("woody_m8.png", GL_RGBA, GL_RGBA);
+	wall_texture2 = LoadTexture("lickitung.jpeg", GL_RGB, GL_RGB);
+	textures[1] = wall_texture2;
+	
+	textures[4] = LoadTexture("grass.jpeg", GL_RGB, GL_RGB);
+	
 	cout << textures[0] << endl;
 	cout << textures[1] << endl;
 
+	init_scene();
+	
 	glutDisplayFunc(&window_display);
 	glutReshapeFunc(&window_reshape);
 	
@@ -224,7 +234,7 @@ GLvoid initGL()
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	
-	glDisable(GL_COLOR_MATERIAL);
+	//glDisable(GL_COLOR_MATERIAL);
 	//glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 	
 	glEnable(GL_TEXTURE_2D);
@@ -235,10 +245,15 @@ GLvoid initGL()
 	glDepthFunc(GL_LEQUAL); //Modo de funcionamiento del Z-Buffer
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); 
 	
-	glClearColor(RED, GREEN, BLUE, ALPHA);
+	//glClearColor(RED, GREEN, BLUE, ALPHA);
+	glMatrixMode(GL_PROJECTION);
+	glClearColor(0.4f, 0.4f, 0.4f, 0.2f); //(R, G, B,
+	glLoadIdentity();
 }
 
 void draw_floor(){
+	
+	glBindTexture(GL_TEXTURE_2D, textures[4]);
 	glBegin(GL_POLYGON);
 	//glColor3f(0.0f, 1.0f, 0.0f);
 	
@@ -255,10 +270,22 @@ void draw_floor(){
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 	//glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emission);
 	
+	glTexCoord2f(0.0f, 0.0f);
 	glVertex3f(-20.0f, 0.0f, -20.0f);
+	
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-20.0f, 0.0f, 20.0f);
+	
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(20.0f, 0.0f, 20.0f);
+	
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(20.0f, 0.0f, -20.0f);
+	
+	/*glVertex3f(-20.0f, 0.0f, -20.0f);
 	glVertex3f(-20.0f, 0.0f, 20.0f);
 	glVertex3f(20.0f, 0.0f, 20.0f);
-	glVertex3f(20.0f, 0.0f, -20.0f);
+	glVertex3f(20.0f, 0.0f, -20.0f);*/
 	
 	glPopMatrix();
 	
@@ -365,9 +392,8 @@ void draw_house(){
 	//draw_wall(-7.5f, 0.0f, 0.0f, 5.0f, -5.0f, 2);
 	
 	//texture
-	
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	glBegin(GL_QUADS);
-	glBindTexture(GL_TEXTURE_2D, textures[1]);
 	//draw_wall(-7.5f, 0.0f, 0.0f, 5.0f, -5.0f, 2);
 	//(-7.5, 0.0), (-7.5, 5.0), (0.0, 0.0), (0.0, 5.0), z = -5
 	glTexCoord2f(0.0f, 0.0f);//coordenadas de textura
@@ -384,8 +410,8 @@ void draw_house(){
 	glEnd();
 	
 	//draw_wall(-7.5f, 0.0f, 0.0f, 5.0f, 0.0f, 2);
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	glBegin(GL_QUADS);
-	glBindTexture(GL_TEXTURE_2D, textures[1]);
 	//(-7.5, 0.0), (-7.5, 5.0), (0.0, 0.0), (0.0, 5.0), z = 0
 	glTexCoord2f(0.0f, 0.0f);//coordenadas de textura
 	glVertex3f(-7.5f, 0.0f, 0.0f);
@@ -400,11 +426,10 @@ void draw_house(){
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glEnd();
 	
-	
 	//draw_wall(0.0f, -5.0f, 5.0f, 0.0f, -7.5f, 0);
 	
-	glBegin(GL_QUADS);
 	glBindTexture(GL_TEXTURE_2D, textures[1]);
+	glBegin(GL_QUADS);
 	//(0.0, 5.0), (0.0, 0.0), (-5.0, 5.0), (-5.0, 0.0), x = -7.5
 	glTexCoord2f(0.0f, 0.0f);//coordenadas de textura
 	glVertex3f(-7.5f, 5.0f, 0.0f);
@@ -419,7 +444,6 @@ void draw_house(){
 	glVertex3f(-7.5f, 0.0f, 0.0f);
 	
 	glEnd();
-	
 	
 	draw_wall(0.0f, -5.0f, 5.0f, 0.0f, 0.0f, 0);
 	draw_roof();
@@ -471,8 +495,7 @@ GLvoid window_display()
 	glLoadIdentity();
 	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);//funcion de transparencia
-	glEnable(GL_BLEND);//utilizar transparencia
-
+	//glEnable(GL_BLEND);//utilizar transparencia
 
 	gluPerspective(45.0f, 1.0f, 0.01f, 100.0f);
 
