@@ -6,6 +6,7 @@
 #include <iostream>
 #include <GL/glut.h>
 #include <FreeImage.h>
+#include <vector>
 //#include "Example/TextureManager.h"
 
 
@@ -108,6 +109,20 @@ GLvoid callback_motion(int x, int y)
 	glutPostRedisplay();
 }
 
+vector<float> normal(float ax, float ay, float az, float bx, float by, float bz){
+	vector<float> res;
+	res.push_back(ay * bz - by * az);
+	res.push_back(bx * az - ax * bz);
+	res.push_back(ax*by - bx*ay);
+	
+	float vec_normal = sqrt(pow(res[0], 2) + pow(res[1], 2) + pow(res[2], 2));
+	
+	res[0] /= vec_normal;
+	res[1] /= vec_normal;
+	res[2] /= vec_normal;
+	
+	return res;
+}
 
 //function called on each frame
 GLvoid window_idle();
@@ -190,11 +205,19 @@ int main(int argc, char **argv)
 	wall_texture2 = LoadTexture("lickitung.jpeg", GL_RGB, GL_RGB);
 	textures[1] = wall_texture2;
 	
+	textures[2] = LoadTexture("tree.jpg", GL_RGB, GL_RGB);
+	
+	textures[3] = LoadTexture("leaves.jpg", GL_RGB, GL_RGB);
+	
 	textures[4] = LoadTexture("grass.jpeg", GL_RGB, GL_RGB);
+	
+	textures[5] = LoadTexture("roof.jpg", GL_RGB, GL_RGB);
 	
 	cout << textures[0] << endl;
 	cout << textures[1] << endl;
-
+	
+	cout << textures[3] << endl;
+	
 	init_scene();
 	
 	glutDisplayFunc(&window_display);
@@ -221,9 +244,9 @@ int main(int argc, char **argv)
 
 GLvoid initGL()
 {
-	GLfloat position[] = { -10.0f, 10.0f, -5.0f, 0.0 };
+	GLfloat position[] = { -10.0f, 5.0f, -10.0f, 0.0 };
 	GLfloat light0Ambient[] = {0.3f, 0.3f, 0.3f, 1.0f};
-	GLfloat light0Diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
+	GLfloat light0Diffuse[] = {5.0f, 5.0f, 5.0f, 1.0f};
 	GLfloat light0Specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
 	
 	glLightfv(GL_LIGHT0, GL_AMBIENT, light0Ambient);
@@ -270,6 +293,8 @@ void draw_floor(){
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 	//glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emission);
 	
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	
 	glTexCoord2f(0.0f, 0.0f);
 	glVertex3f(-20.0f, 0.0f, -20.0f);
 	
@@ -281,11 +306,6 @@ void draw_floor(){
 	
 	glTexCoord2f(1.0f, 0.0f);
 	glVertex3f(20.0f, 0.0f, -20.0f);
-	
-	/*glVertex3f(-20.0f, 0.0f, -20.0f);
-	glVertex3f(-20.0f, 0.0f, 20.0f);
-	glVertex3f(20.0f, 0.0f, 20.0f);
-	glVertex3f(20.0f, 0.0f, -20.0f);*/
 	
 	glPopMatrix();
 	
@@ -309,16 +329,28 @@ void draw_roof(){
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 	//glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, no_mat);
 	
-	
-	glBegin(GL_POLYGON);
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	glBegin(GL_TRIANGLES);
+		glTexCoord2f(1.0f, 1.0f);
 		glVertex3f(-7.5f, 5.0f, -5.0f);
+		
+		glTexCoord2f(0.5f, 0.5f);
 		glVertex3f(-7.5f, 5.0f, 0.0f);
+		
+		glTexCoord2f(0.0f, 1.0f);
 		glVertex3f(-7.5f, 8.0f, -2.5f);
 	glEnd();
 	
+	glNormal3f(1.0f, 0.0f, 0.0f);
 	glBegin(GL_POLYGON);
+		glTexCoord2f(1.0f, 1.0f);
 		glVertex3f(0.0f, 5.0f, -5.0f);
+		
+		glTexCoord2f(0.5f, 0.5f);
 		glVertex3f(0.0f, 5.0f, 0.0f);
+		
+		glTexCoord2f(0.0f, 1.0f);
 		glVertex3f(0.0f, 8.0f, -2.5f);
 	glEnd();
 	
@@ -338,17 +370,43 @@ void draw_roof(){
 	
 	//glColor3f(0.5f,0.5f,0.5f);
 	
-	glBegin(GL_POLYGON);
+	glBindTexture(GL_TEXTURE_2D, textures[5]);
+	
+	vector<float> normals;
+	normals = normal((-7.5 + 7.5), (8.0-5.0), (-2.5 + 5.0), (0+7.5), (8.0-5.0), (-2.5+5.0)); //two vectors that generate plane: AB AC
+	
+	glNormal3f(-normals[0], -normals[1], -normals[2]);
+	
+	glBegin(GL_QUADS);
+		glTexCoord2f(0.0f, 0.0f);
 		glVertex3f(-7.5f, 5.0f, -5.0f);
+		
+		glTexCoord2f(0.0f, 1.0f);
 		glVertex3f(-7.5f, 8.0f, -2.5f);
+		
+		glTexCoord2f(1.0f, 1.0f);
 		glVertex3f(0.0f, 8.0f, -2.5f);
+		
+		glTexCoord2f(1.0f, 0.0f);
 		glVertex3f(0.0f, 5.0f, -5.0f);
+		
 	glEnd();
 	
-	glBegin(GL_POLYGON);
+	normals = normal((-7.5 + 7.5), (8.0-5.0), (-2.5 + 0.0), (0.0+7.5), (8.0-5.0), (-2.5+0.0)); //two vectors that generate plane: AB AC
+	
+	glNormal3f(normals[0], normals[1], normals[2]);
+	
+	glBegin(GL_QUADS);
+		glTexCoord2f(0.0f, 0.0f);
 		glVertex3f(-7.5f, 5.0f, 0.0f);
+		
+		glTexCoord2f(0.0f, 1.0f);
 		glVertex3f(-7.5f, 8.0f, -2.5f);
+		
+		glTexCoord2f(1.0f, 1.0f);
 		glVertex3f(0.0f, 8.0f, -2.5f);
+		
+		glTexCoord2f(1.0f, 0.0f);
 		glVertex3f(0.0f, 5.0f, 0.0f);
 	glEnd();
 	
@@ -389,12 +447,11 @@ void draw_house(){
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, wallSpecular);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 	
-	//draw_wall(-7.5f, 0.0f, 0.0f, 5.0f, -5.0f, 2);
-	
 	//texture
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	//Back
+	glNormal3f(0.0f, 0.0f, 1.0f);
 	glBegin(GL_QUADS);
-	//draw_wall(-7.5f, 0.0f, 0.0f, 5.0f, -5.0f, 2);
 	//(-7.5, 0.0), (-7.5, 5.0), (0.0, 0.0), (0.0, 5.0), z = -5
 	glTexCoord2f(0.0f, 0.0f);//coordenadas de textura
 	glVertex3f(-7.5f, 0.0f, -5.0f);
@@ -409,8 +466,11 @@ void draw_house(){
 	glVertex3f(0.0f, 0.0f, -5.0f);
 	glEnd();
 	
-	//draw_wall(-7.5f, 0.0f, 0.0f, 5.0f, 0.0f, 2);
+	
+	//front
+	
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	glNormal3f(0.0f, 0.0f, -1.0f);
 	glBegin(GL_QUADS);
 	//(-7.5, 0.0), (-7.5, 5.0), (0.0, 0.0), (0.0, 5.0), z = 0
 	glTexCoord2f(0.0f, 0.0f);//coordenadas de textura
@@ -426,9 +486,11 @@ void draw_house(){
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glEnd();
 	
-	//draw_wall(0.0f, -5.0f, 5.0f, 0.0f, -7.5f, 0);
 	
-	glBindTexture(GL_TEXTURE_2D, textures[1]);
+	//left
+	
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	glNormal3f(-1.0f, 0.0f, 0.0f);
 	glBegin(GL_QUADS);
 	//(0.0, 5.0), (0.0, 0.0), (-5.0, 5.0), (-5.0, 0.0), x = -7.5
 	glTexCoord2f(0.0f, 0.0f);//coordenadas de textura
@@ -445,7 +507,28 @@ void draw_house(){
 	
 	glEnd();
 	
-	draw_wall(0.0f, -5.0f, 5.0f, 0.0f, 0.0f, 0);
+	
+	//right
+	
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	glBegin(GL_QUADS);
+	
+	glTexCoord2f(0.0f, 0.0f);//coordenadas de textura
+	glVertex3f(0.0f, 5.0f, 0.0f);
+	
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(0.0f, 5.0f, -5.0f);
+	
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, -5.0f);
+	
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	
+	glEnd();
+	
+	//draw_wall(0.0f, -5.0f, 5.0f, 0.0f, 0.0f, 0);
 	draw_roof();
 }
 
@@ -461,13 +544,14 @@ void draw_tree(){
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, troncoSpecular);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 	
-	
 	GLUquadricObj *quadratic, *quadratic2;
 	quadratic = gluNewQuadric();
+	glBindTexture(GL_TEXTURE_2D, textures[2]);
+	gluQuadricTexture(quadratic, TRUE);
+	gluQuadricNormals(quadratic, GLU_SMOOTH);
 	glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
 	glTranslatef(7.5f, -5.0f, 0.0f);
 	gluCylinder(quadratic,1.0f,1.0f,10.0f,32,32);
-	
 	
 	GLfloat leafAmbient[] = {0.0f, 0.3f, 0.0f, 1.0f};
 	GLfloat leafDifuse[] = {0.0f, 1.0f, 0.0f, 1.0f};
@@ -481,8 +565,16 @@ void draw_tree(){
 
 	//glColor3f(0.0f, 1.0f, 0.0f);
 	quadratic2 = gluNewQuadric();
+	glEnable(GL_BLEND);
+	
+	glBindTexture(GL_TEXTURE_2D, textures[3]);
+	gluQuadricNormals(quadratic2, GLU_SMOOTH);
+	gluQuadricTexture(quadratic2, GL_TRUE);
 	glTranslatef(0.0f, 0.0f, 10.0f);
 	gluSphere(quadratic2, 3.0f, 32, 32);
+	
+	glDisable(GL_BLEND);
+	
 	glPopMatrix();
 }
 
