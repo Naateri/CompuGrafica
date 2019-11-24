@@ -336,10 +336,11 @@ void draw_roof(){
 		glVertex3f(-7.5f, 5.0f, -5.0f);
 		
 		glTexCoord2f(0.5f, 0.5f);
-		glVertex3f(-7.5f, 5.0f, 0.0f);
+		glVertex3f(-7.5f, 8.0f, -2.5f);
 		
 		glTexCoord2f(0.0f, 1.0f);
-		glVertex3f(-7.5f, 8.0f, -2.5f);
+		glVertex3f(-7.5f, 5.0f, 0.0f);
+		
 	glEnd();
 	
 	glNormal3f(1.0f, 0.0f, 0.0f);
@@ -348,10 +349,10 @@ void draw_roof(){
 		glVertex3f(0.0f, 5.0f, -5.0f);
 		
 		glTexCoord2f(0.5f, 0.5f);
-		glVertex3f(0.0f, 5.0f, 0.0f);
+		glVertex3f(0.0f, 8.0f, -2.5f);
 		
 		glTexCoord2f(0.0f, 1.0f);
-		glVertex3f(0.0f, 8.0f, -2.5f);
+		glVertex3f(0.0f, 5.0f, 0.0f);
 	glEnd();
 	
 	//glPopMatrix();
@@ -493,20 +494,19 @@ void draw_house(){
 	glNormal3f(-1.0f, 0.0f, 0.0f);
 	glBegin(GL_QUADS);
 	//(0.0, 5.0), (0.0, 0.0), (-5.0, 5.0), (-5.0, 0.0), x = -7.5
-	glTexCoord2f(0.0f, 0.0f);//coordenadas de textura
+	glTexCoord2f(0.0f, 0.0f);
 	glVertex3f(-7.5f, 5.0f, 0.0f);
 	
 	glTexCoord2f(0.0f, 1.0f);
-	glVertex3f(-7.5f, 5.0f, -5.0f);
+	glVertex3f(-7.5f, 0.0f, 0.0f);
 	
 	glTexCoord2f(1.0f, 1.0f);
 	glVertex3f(-7.5f, 0.0f, -5.0f);
 	
 	glTexCoord2f(1.0f, 0.0f);
-	glVertex3f(-7.5f, 0.0f, 0.0f);
+	glVertex3f(-7.5f, 5.0f, -5.0f);
 	
 	glEnd();
-	
 	
 	//right
 	
@@ -518,13 +518,13 @@ void draw_house(){
 	glVertex3f(0.0f, 5.0f, 0.0f);
 	
 	glTexCoord2f(0.0f, 1.0f);
-	glVertex3f(0.0f, 5.0f, -5.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
 	
 	glTexCoord2f(1.0f, 1.0f);
 	glVertex3f(0.0f, 0.0f, -5.0f);
 	
 	glTexCoord2f(1.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 5.0f, -5.0f);
 	
 	glEnd();
 	
