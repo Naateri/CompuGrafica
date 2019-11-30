@@ -13,7 +13,7 @@ version_required=20130729
 custom_tabs=0
 tab_use_spaces=0
 explorer_path=
-current_source=fontvieille.txt
+current_source=tp5.cpp
 path_char=/
 [source]
 path=TextureManager.cpp
@@ -21,7 +21,7 @@ cursor=0:0
 open=true
 [source]
 path=tp5.cpp
-cursor=265:17
+cursor=432:1
 open=true
 [header]
 path=TextureManager.h

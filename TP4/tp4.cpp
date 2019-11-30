@@ -38,7 +38,7 @@ int id = 1;
 
 GLuint wall_texture, wall_texture2;
 
-GLuint textures[7];// = {0,0,0,0,0,0,0,0,0,0,0};
+GLuint textures[9];// = {0,0,0,0,0,0,0,0,0,0,0};
 
 //wall_1, wall_2, triangle_1, roof_1, floor, tronco, hojas
 
@@ -212,6 +212,10 @@ int main(int argc, char **argv)
 	textures[4] = LoadTexture("grass.jpeg", GL_RGB, GL_RGB);
 	
 	textures[5] = LoadTexture("roof.jpg", GL_RGB, GL_RGB);
+	
+	textures[6] = LoadTexture("door.jpg", GL_RGB, GL_RGB);
+	
+	textures[7] = LoadTexture("window.jpg", GL_RGB, GL_RGB);
 	
 	cout << textures[0] << endl;
 	cout << textures[1] << endl;
@@ -450,7 +454,7 @@ void draw_house(){
 	
 	//texture
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
-	//Back
+	//back
 	glNormal3f(0.0f, 0.0f, 1.0f);
 	glBegin(GL_QUADS);
 	//(-7.5, 0.0), (-7.5, 5.0), (0.0, 0.0), (0.0, 5.0), z = -5
@@ -466,7 +470,6 @@ void draw_house(){
 	glTexCoord2f(1.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, -5.0f);
 	glEnd();
-	
 	
 	//front
 	
@@ -486,7 +489,6 @@ void draw_house(){
 	glTexCoord2f(1.0f, 0.0f);
 	glVertex3f(0.0f, 0.0f, 0.0f);
 	glEnd();
-	
 	
 	//left
 	
@@ -526,6 +528,49 @@ void draw_house(){
 	glTexCoord2f(1.0f, 0.0f);
 	glVertex3f(0.0f, 5.0f, -5.0f);
 	
+	glEnd();
+	
+	GLfloat windowAmbient[] = {(135/256), (206/256), (250/256), 1.0f};
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, windowAmbient);
+	
+	//window
+	glBindTexture(GL_TEXTURE_2D, textures[7]);
+	glNormal3f(0.0f, 0.0f, -1.0f);
+	glBegin(GL_QUADS);
+	//(-7.5, 0.0), (-7.5, 5.0), (0.0, 0.0), (0.0, 5.0), z = -5
+	glTexCoord2f(0.0f, 0.0f);//coordenadas de textura
+	glVertex3f(-3.0f, 2.0f, 0.01f);
+	
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-3.0f, 4.5f, 0.01f);
+	
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(-1.0f, 4.5f, 0.01f);
+	
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(-1.0f, 2.0f, 0.01f);
+	glEnd();
+	
+	//door
+	
+	GLfloat doorAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, doorAmbient);
+	
+	glBindTexture(GL_TEXTURE_2D, textures[6]);
+	glNormal3f(0.0f, 0.0f, -1.0f);
+	glBegin(GL_QUADS);
+	//(-7.5, 0.0), (-7.5, 5.0), (0.0, 0.0), (0.0, 5.0), z = -5
+	glTexCoord2f(0.0f, 0.0f);//coordenadas de textura
+	glVertex3f(-6.0f, 0.0f, 0.01f);
+	
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(-6.0f, 4.0f, 0.01f);
+	
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(-4.0f, 4.0f, 0.01f);
+	
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(-4.0f, 0.0f, 0.01f);
 	glEnd();
 	
 	//draw_wall(0.0f, -5.0f, 5.0f, 0.0f, 0.0f, 0);

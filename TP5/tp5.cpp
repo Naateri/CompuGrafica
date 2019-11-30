@@ -26,16 +26,17 @@ GLvoid window_reshape(GLsizei width, GLsizei height);
 GLvoid window_key(unsigned char key, int x, int y);
 
 //variables para el gizmo
-float delta_x = -49.0; 
-float delta_y = 16.0;
+float delta_x = -43.0; 
+float delta_y = 22.0;
 float mouse_x, mouse_y;
-float var_x = 310.0;
-float var_z = -830.0;
+float var_x = -330.0;
+float var_z = 3010.0;
 float step = 0; //0.0 Posicion inicial. 1.0 Traslacion. 2.0 Primera Rotacion(en y). 3.0 Segunda Rotacion (en x) 4.0 Ultima Rotacion (en z)
 
 bool light = true;
 bool normals = true;
-bool texture = true;
+bool texture = false;
+bool emission = true;
 
 typedef struct // Definicion de un punto del terreo
 {
@@ -73,12 +74,12 @@ private:
 	int nb_pt_x, nb_pt_z; // quantidad de punto en X y Z
 	float dist_x, dist_z; // distancia entre dos puntos segun X y Z
 	PuntoTerreno *lista_puntos; // Tabla que contiene los puntos
-	GLuint *lista_indices ; // Tabla que contiene los indicess
+	GLuint *lista_indices; // Tabla que contiene los indicess
 	void build_triangles();
 public :
 	Terreno(){
-		lista_puntos = new PuntoTerreno[102*101];
-		lista_indices = new GLuint[102*101*6];
+		lista_puntos = new PuntoTerreno[101*101];
+		lista_indices = new GLuint[101*101*6];
 		dist_x = 50.0f; 
 		dist_z = 50.0f;
 		nb_pt_x = 101;
@@ -362,7 +363,7 @@ bool Terreno::load(char* filename){
 	
 	int x = 0, z = 0;
 	
-	float start_x = 0.0f, start_z = 0.0f;
+	float start_x = -2500.0f, start_z = -2500.0f;
 	float height;
 	
 	if (myfile.is_open()){
@@ -370,14 +371,17 @@ bool Terreno::load(char* filename){
 		while ( getline (myfile,line) ){
 			
 			string last_cur_num;
-			if (cur_line++ == 0) continue;
+			if (cur_line == 0){
+				cur_line++;
+				continue;
+			}
 			//cout << line << endl;
-			start_x = 0.0f;
+			start_x = -2500.0f;
 			x = 0;
 			
 			cur_num.clear();
 			
-			for(int i = 0; i <= line.size(); i++){
+			for(int i = 0; i < line.size(); i++){
 				if (line[i] == ' '){
 					temp = new PuntoTerreno;
 					height = stof(cur_num);
@@ -390,12 +394,10 @@ bool Terreno::load(char* filename){
 					
 					lista_puntos[cur_line-1] = *temp;
 					
-					//last_cur_num = cur_num;
-					
 					cur_num.clear();
 					cur_line++;
 			
-					start_x += 50.0f;
+					start_x += dist_x;
 					x++;
 				} else {
 					cur_num += line[i];
@@ -428,9 +430,8 @@ void Terreno::display(){
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, difuse);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emission);
+	if (emission) glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emission);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
-	
 	
 	int count = 101*101*6;
 	
@@ -551,7 +552,7 @@ int main(int argc, char **argv)
 GLvoid initGL()
 {
 
-	GLfloat position[] = { 2500.0f, 300.0f, 2500.0f, 0.0 };
+	GLfloat position[] = { 2500.0f, 0.0f, 2500.0f, 0.0 };
 	GLfloat light0Ambient[] = {0.3f, 0.3f, 0.3f, 1.0f};
 	GLfloat light0Diffuse[] = {5.0f, 5.0f, 5.0f, 1.0f};
 	GLfloat light0Specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -585,7 +586,7 @@ GLvoid window_display()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
-	gluPerspective(45.0f, 1.0f, 0.01f, 10000.0f);
+	gluPerspective(45.0f, 1.0f, 0.01f, 100000.0f);
 	gluLookAt(0.0f, 0.0f, 7500.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
 	glTranslatef(var_x, 0.0, var_z);
@@ -621,6 +622,10 @@ GLvoid window_key(unsigned char key, int x, int y)
 	switch (key) {
 	case ECHAP:
 		exit(1);
+		break;
+	case '1':
+		emission = !emission;
+		glutPostRedisplay();
 		break;
 	default:
 		printf("La touche %d non active.\n", key);
